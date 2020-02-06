@@ -30,8 +30,7 @@ guide-category: collections
 //	limitations under the License.
 -->
 
-
-## What you'll learn
+## What you'll learn
 
 In this guide you will learn how to create a local stack hub for the application stacks that you want to use in your organisation. Then you'll learn how to create a new stack, customize it, and publish it to a
 GitHub repository for developers to use in their local development environment. Finally you'll learn how to configure your kubernetes custom resource definition (CRD) to initialize and deploy the containerized applications that are developed.  
