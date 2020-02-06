@@ -6,8 +6,9 @@ duration: 40 minutes
 releasedate: 2020-02-06
 description: Learn how to create, update, build, test, and publish application stacks
 tags: ['stack', 'Node.js']
-guide-category: collections
+guide-category: stacks
 ---
+
 
 <!-- Note:
 > This repository contains the guide documentation source. To view
@@ -32,8 +33,8 @@ guide-category: collections
 
 ## What you'll learn
 
-In this guide you will learn how to create a local stack hub for the application stacks that you want to use in your organisation. Then you'll learn how to create a new stack, customize it, and publish it to a
-GitHub repository for developers to use in their local development environment. Finally you'll learn how to configure your kubernetes custom resource definition (CRD) to initialize and deploy the containerized applications that are developed.  
+In this guide you will learn how to create a new application stack for use in your organization. Then you'll learn how to customize it and publish it to a
+GitHub repository for developers to use in their local development environment. Finally you'll learn how to configure your Kubernetes custom resource definition (CRD) to initialize and deploy the containerized applications that are developed.  
 
 ## Prerequisites
 
@@ -43,8 +44,7 @@ GitHub repository for developers to use in their local development environment. 
 
 ## Getting started
 
-A stack hub is your control point for all the applications stacks that you intend to use in your organization. How you organize your stack hub is entirely up to you and might depend on a number of local requirements. Using a different repository for each stack gives you the flexibility to apply version control at the individual stack level. The important part to understand is that each
-repository you create results in a unique configuration file that a developer might use for accessing any stacks that are stored there.  
+Application stacks are stored in Git repositories. How you organize the applications stacks that you intend to use in your organization is entirely up to you and might depend on a number of local requirements. For example, using a different repository for each stack gives you the flexibility to apply version control at the individual stack level. The important part to understand is that each repository you create results in a unique configuration file that a developer might use for accessing any stacks that are stored there.  
 
 In this guide we'll assume that you are interested in using an application stack for Javascript development with the Node.js Express framework. You've taken a look at the Node.js Express application stack, which you want to use as the basis for a local customized stack.
 
@@ -241,10 +241,42 @@ appsody repo add https://github.com/myorg/my-org-repository/releases/latest/down
 
 Developers can now create applications based on your customized stack in their local development environment.
 
-## Configuring the kubernetes operator custom resource definition
+## Configuring the Kubernetes operator custom resource definition
 
-In order to deploy containerized applications that have been developed using your application stack, you must configure kubernetes with information about the application stack and the deployment container that must be used. This configuration forms part of the operator custom resource definition (CRD).
+In order to deploy containerized applications that have been developed using your application stack, you must configure Kubernetes with information about the application stack and the deployment container that must be used. This configuration forms part of the operator custom resource definition (CRD).
 
+The following section shows the configuration for stack repositories:
 
+```
+stacks:
+  repositories:
+  - name:
+    https:
+      url:
+      skipCertVerification: [true|false]
+  - name:
+    https:
+      url:
+      skipCertVerification: [true|false]
+```
 
-Configure your Kabanero CRD to add in Kind:stacks
+Where:
+
+- `repositories` lists the repositories to search for stacks
+- `name` is the name of your repository
+- `url` contains the URL string for the `index.yaml` file
+- `skipCertVerification` determines whether to verify the certificate before activating (default is `false`)
+
+To change the desired state for a repository after the instance is deployed, you must edit each resource manually.
+
+The following configuration can be used for the repository you created earlier:
+
+```
+stacks:
+  repositories:
+  - name: my-org-repository
+    https:
+      url: https://github.com/myorg/my-org-repository/releases/latest/download/my-org-repository-index.yaml
+```
+
+Edit your Kabanero CR instance to include the stack configuration and deploy it. Applications that have been developed using your stack can now be deployed to your Kubernetes cluster.
